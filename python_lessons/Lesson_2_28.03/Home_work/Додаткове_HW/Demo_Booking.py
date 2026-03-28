@@ -1,4 +1,17 @@
+file_name = "apartments.svs"
+
 apartments = []
+
+try:
+    f = open(file_name, "r", encoding="utf-8")
+    for line in f:
+        name, price = line.strip().split(";")
+        apartments.append([name, int(price)])
+    f.close()
+except:
+    pass
+
+
 do = -1
 while do != 0:
     do = int(input( " \n\n\n 1. Додати квартиу \n 2. Видалити квартиру \n 3. Редагувати квартиру \n 4. Показати всі квартири \n 5. Показати найдешевшу \n 6. Показати найдорощу \n 7. Сортувати від найдешевшої до найдорощої \n 8. Сортувати від найдорощої до найдешевшої\n 0. Вихід \n"))
@@ -57,9 +70,9 @@ while do != 0:
         if not apartments:
             print("Список порожній")
         else:
-                cheap = min(apartments, key=lambda x: x[1])
-                print (f"Найдешевша кваритра:{cheap[0]},{cheap[1]}")
-    
+            cheap = min(apartments, key=lambda x: x[1])
+            print (f"Найдешевша кваритра:{cheap[0]},{cheap[1]}")
+
 
     elif do == 6:
         if not apartments:
@@ -67,7 +80,7 @@ while do != 0:
         else:
             cheap = max(apartments, key=lambda x: x[1])
             print (f"Найдорожча кваритра:{cheap[0]},{cheap[1]}")
-    
+
 
     elif do == 7:
         if not apartments:
@@ -85,3 +98,9 @@ while do != 0:
             apartments.sort(key=lambda x: x[1], reverse=True)
             for item in apartments:
                 print(f"{item[0]}:{item[1]}")
+
+
+f = open(file_name, "w", encoding="utf-8")
+for item in apartments:
+    f.write(f"{item[0]};{item[1]}\n")
+f.close()
