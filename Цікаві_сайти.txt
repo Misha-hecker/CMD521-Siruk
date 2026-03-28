@@ -6,3 +6,4 @@ https://www.netacad.com/catalogs/learn/cybersecurity
 https://hackyourmom.com/
 https://haveibeenpwned.com/
 https://dou.ua/
+https://www.geeksforgeeks.org/python/reading-writing-text-files-python/
