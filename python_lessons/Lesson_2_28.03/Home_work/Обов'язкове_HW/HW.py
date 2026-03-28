@@ -26,3 +26,7 @@ elif login_password > password:
     print("Password too large")
 else:
     print("Password too small")
+
+
+
+input("Press Enter to exit")
