@@ -63,7 +63,7 @@ while do != 0:
             print("Список порожній")
         else:
             for item in apartments:
-                print (f"{item[0]}")
+                print (f"{item[0]}:{item[1]}")
 
 
     elif do == 5:
