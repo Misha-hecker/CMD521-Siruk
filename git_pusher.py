@@ -1,5 +1,6 @@
 import os
 import subprocess
+import webbrowser
 
 def run_git_command(command):
     return subprocess.run(command, capture_output=True, text=True)
@@ -47,5 +48,8 @@ try:
 
 except subprocess.CalledProcessError as e:
     print(f"\n❌ Помилка виконання команди: {e.stderr}")
+
+url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], text=True).strip()
+webbrowser.open(url.replace(".git", ""))
 
 input("\nНатисни ENTER для виходу")
