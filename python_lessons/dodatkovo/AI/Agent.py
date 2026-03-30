@@ -2,19 +2,26 @@ import os
 import asyncio
 from openai import OpenAI
 
-#Configuration vays
-# prompt лежить в папці AI, а працювати має в AI/ai_folder
-BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
+# SETTINGS
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROMPT_FILE = os.path.join(BASE_DIR, "prompt.txt")
 ROOT = os.path.join(BASE_DIR, "ai_folder")
 
-#Make folder if not exist
+# Create folder if it does not exist
 os.makedirs(ROOT, exist_ok=True)
 
-#Agent Lm Studio
+# Connect to LM Studio
 ai = OpenAI(base_url="http://localhost:1234/v1", api_key="lm")
 
+def get_instructions():
+    """Read prompt.txt or use a simple default."""
+    if os.path.exists(PROMPT_FILE):
+        with open(PROMPT_FILE, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    return "You are a terminal assistant."
+
 async def run_command(cmd):
-    """Виконує системну команду СУВОРО в межах ROOT."""
+    """Run command inside ai_folder."""
     process = await asyncio.create_subprocess_shell(
         f"cd {ROOT} && {cmd}",
         stdout=asyncio.subprocess.PIPE,
@@ -24,24 +31,27 @@ async def run_command(cmd):
     return (stdout.decode() or stderr.decode()).strip()
 
 async def main():
-    print(f"🚀 Агент активований.")
-    print(f"📁 Робоча зона обмежена папкою: {ROOT}")
-    print("Введіть 'exit', щоб вийти.\n")
+    print(f"🚀 Agent started.")
+    print(f"📁 Folder: {ROOT}")
+    print("Type 'exit' to quit.\n")
 
     while True:
-        user_input = input("👤 Ви: ")
+        user_input = input("👤 You: ")
         
-        if user_input.lower() in ["exit", "quit", "вихід"]:
-            print("👋 Бувай!")
+        if user_input.lower() in ["exit", "quit", "stop"]:
+            print("👋 Bye!")
             break
 
+        # Get fresh list of files
         files = os.listdir(ROOT)
+        instructions = get_instructions()
         
+        # Simple system prompt
         system_prompt = (
-            f"Ти — термінальний помічник. Твоя робоча директорія: {ROOT}. "
-            f"Файли в ній: {files}. "
-            "Команди пиши СУВОРО у форматі: [CMD] команда. "
-            "Не намагайся виходити за межі цієї папки. Відповідай коротко."
+            f"{instructions}\n\n"
+            f"Your folder: {ROOT}\n"
+            f"Files: {files}\n"
+            "Write commands like this: [CMD] command. Be short."
         )
 
         try:
@@ -57,24 +67,26 @@ async def main():
             res = response.choices[0].message.content
 
             if "[CMD]" in res:
+                # Parse and run command
                 cmd = res.split("[CMD]")[1].split('\n')[0].strip()
-                print(f"💻 Виконую: {cmd}")
+                print(f"💻 Running: {cmd}")
                 
                 out = await run_command(cmd)
                 
                 if out:
+                    # Show only first 500 characters
                     display_out = out if len(out) < 500 else out[:500] + "..."
-                    print(f"📝 Результат:\n{display_out}")
+                    print(f"📝 Result:\n{display_out}")
                 else:
-                    print("✅ Виконано.")
+                    print("✅ Done.")
             else:
-                print(f"🤖: {res}")
+                print(f"🤖 AI: {res}")
 
         except Exception as e:
-            print(f"❌ Помилка зв'язку з LM Studio: {e}")
+            print(f"❌ Error: {e}")
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nВихід...")
+        print("\nExit...")
