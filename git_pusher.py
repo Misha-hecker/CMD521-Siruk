@@ -51,5 +51,3 @@ except subprocess.CalledProcessError as e:
 
 url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], text=True).strip()
 webbrowser.open(url.replace(".git", ""))
-
-input("\nНатисни ENTER для виходу")
