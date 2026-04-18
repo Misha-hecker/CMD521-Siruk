@@ -1,3 +1,67 @@
+# User manager:
+# Показати всіх користувачів
+# Додати нового
+# Редагувати вибраного користувача
+# Видалити користувача
+# Знайти найстаршого
+# Знайти користувача з найбільшою ЗП
+# Вихід
+# {
+# id: 1.
+# Name: Bart,
+# Surname: Simpson
+# Age: 32
+# Role: C++ Developer
+# Salary: 100500
+# }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # import requests
 
 # API = "https://api.privatbank.ua/p24api/pubinfo?exchange&coursid=5"
@@ -16,30 +80,30 @@
 # print(archive)
 
 
-from function import Plus, Minus, Multiply, Divide, Menu
-variable = -1
-a = False
-while a == False:
-    
-    variable = Menu()
+# from function import Plus, Minus, Multiply, Divide, Menu
+# variable = -1
+# a = False
+# while a == False:
 
-    if variable == 1:
-        first = int(input("Введіть перше число: "))
-        second = int(input("Введіть друге число: "))
-        print(Plus(first, second))
-    elif variable == 2:
-        first = int(input("Введіть перше число: "))
-        second = int(input("Введіть друге число: "))
-        print(Minus(first, second))
-    elif variable == 3:
-        first = int(input("Введіть перше число: "))
-        second = int(input("Введіть друге число: "))
-        print(Multiply(first, second))
-    elif variable == 4:
-        first = int(input("Введіть перше число: "))
-        second = int(input("Введіть друге число: "))
-        print(Divide(first, second))
-    elif variable == 0:
-        a = True
-    else:
-        print("Невірний вибір. Спробуйте ще раз.")
+#     variable = Menu()
+
+#     if variable == 1:
+#         first = int(input("Введіть перше число: "))
+#         second = int(input("Введіть друге число: "))
+#         print(Plus(first, second))
+#     elif variable == 2:
+#         first = int(input("Введіть перше число: "))
+#         second = int(input("Введіть друге число: "))
+#         print(Minus(first, second))
+#     elif variable == 3:
+#         first = int(input("Введіть перше число: "))
+#         second = int(input("Введіть друге число: "))
+#         print(Multiply(first, second))
+#     elif variable == 4:
+#         first = int(input("Введіть перше число: "))
+#         second = int(input("Введіть друге число: "))
+#         print(Divide(first, second))
+#     elif variable == 0:
+#         a = True
+#     else:
+#         print("Невірний вибір. Спробуйте ще раз.")
