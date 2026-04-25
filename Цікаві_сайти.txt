@@ -9,6 +9,8 @@ https://dou.ua/
 https://www.geeksforgeeks.org/python/reading-writing-text-files-python/
 https://www.w3schools.com/python/ref_list_sort.asp
 https://scapy.net/
+https://flask.palletsprojects.com/en/stable/
+https://www.djangoproject.com/
 
 
 Mystat recomends
