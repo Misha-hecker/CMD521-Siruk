@@ -1,3 +1,7 @@
+# DISCLAIMER: This script is for educational purposes only.
+# Do not use it for illegal activities. The author is not 
+# responsible for any damage caused by this tool.
+
 from scapy.all import IP, ICMP, TCP, sr1, Raw
 import argparse
 import time
