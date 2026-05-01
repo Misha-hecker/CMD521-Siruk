@@ -1,2 +1,1 @@
-I’d like to apologize in advance to everyone reading this.
-I’m not Indian—I just have bad English.))
+This project is created for educational purposes only. The author is not responsible for any misuse of this software. Using this tool for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state, and federal laws. Developers assume no liability and are not responsible for any misuse or damage caused by this program.
