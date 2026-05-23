@@ -83,6 +83,13 @@ def generate_pr_body(branch, commit_lines):
     return '\n'.join(lines)
 
 
+def sanitize_branch_name(name, prefix='AI-'):
+    slug = re.sub(r'[^0-9A-Za-z]+', '-', name).strip('-')
+    if not slug:
+        slug = 'ai-pr'
+    return f'{prefix}({slug})'
+
+
 def find_existing_pr(owner, repo, branch, token):
     url = f'https://api.github.com/repos/{owner}/{repo}/pulls?state=open&head={owner}:{branch}'
     prs = github_api_request(url, token=token)
@@ -113,6 +120,19 @@ def main():
     print(f'🔀 Поточна гілка: {branch}')
 
     try:
+        last_commit = run_git_command(['git', 'log', '-1', '--pretty=%s', branch], check=True).stdout.strip()
+        title = generate_pr_title(branch, last_commit)
+        target_branch = branch
+        if not branch.startswith('AI-'):
+            target_branch = sanitize_branch_name(title)
+            print(f'🌿 Створюю або перемикаюся на PR-гілку: {target_branch}')
+            existing_branches = [b.strip().replace('* ', '') for b in run_git_command(['git', 'branch']).stdout.splitlines()]
+            if target_branch in existing_branches:
+                run_git_command(['git', 'checkout', target_branch], check=True)
+            else:
+                run_git_command(['git', 'checkout', '-b', target_branch], check=True)
+            branch = target_branch
+
         remotes = run_git_command(['git', 'remote'], check=True).stdout.splitlines()
         if 'origin' not in remotes:
             print('❌ Віддалений репозиторій origin не знайдено.')
@@ -125,8 +145,14 @@ def main():
         print('🌐 Отримую оновлення з origin...')
         run_git_command(['git', 'fetch', 'origin'], check=True)
 
-        print('⬇️ Пулю поточну гілку...')
-        run_git_command(['git', 'pull', '--ff-only', 'origin', branch], check=True)
+        remote_branch_exists = bool(run_git_command(['git', 'ls-remote', '--heads', 'origin', branch]).stdout.strip())
+        if remote_branch_exists:
+            print('⬇️ Пулю поточну гілку...')
+            run_git_command(['git', 'pull', '--ff-only', 'origin', branch], check=True)
+        else:
+            print(f'⚠️ Remote branch origin/{branch} не знайдено. Далі буде створено PR без попереднього pull.')
+            print(f'📤 Пушу нову гілку {branch} до origin...')
+            run_git_command(['git', 'push', '-u', 'origin', branch], check=True)
 
         ahead_behind = run_git_command(['git', 'rev-list', '--left-right', '--count', f'origin/{default_branch}...{branch}'], check=True).stdout.strip()
         behind, ahead = map(int, ahead_behind.split())
@@ -136,10 +162,11 @@ def main():
             return 0
 
         print(f'✨ Branch is ahead of {default_branch} by {ahead} commit(s). Preparing PR info...')
-        last_commit = run_git_command(['git', 'log', '-1', '--pretty=%s', branch], check=True).stdout.strip()
         commits = run_git_command(['git', 'log', '--oneline', f'origin/{default_branch}..{branch}'], check=True).stdout.splitlines()
-        title = generate_pr_title(branch, last_commit)
         body = generate_pr_body(branch, commits)
+        if remote_branch_exists:
+            print('📤 Пушу локальні зміни до origin...')
+            run_git_command(['git', 'push', 'origin', branch], check=True)
 
         if owner and repo and os.environ.get('GITHUB_TOKEN'):
             token = os.environ['GITHUB_TOKEN']
